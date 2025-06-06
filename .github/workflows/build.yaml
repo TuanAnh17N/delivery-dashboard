@@ -38,7 +38,7 @@ jobs:
     with:
       name: delivery-dashboard
       version: ${{ needs.prepare.outputs.version }}
-      oci-register: ${{ needs.prepare.outputs.oci-registry }}
+      oci-registry: ${{ needs.prepare.outputs.oci-registry }}
       oci-repository: odg/delivery-dashboard
       dockerfile: Dockerfile
       ctx: oci-images
@@ -65,7 +65,7 @@ jobs:
     with:
       name: delivery-dashboard
       dir: charts/delivery-dashboard
-      oci-registery: ${{ needs.prepare.outputs.oci-registry }}
+      oci-registry: ${{ needs.prepare.outputs.oci-registry }}
       oci-repository: charts/odg
       ocm-mappings: |
         - ref: ocm-resource:delivery-dashboard.repository
