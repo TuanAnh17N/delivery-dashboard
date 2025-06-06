@@ -1,11 +1,16 @@
 name: Build
 
 on:
-  workflow_call:
+  workflow_dispatch:
     inputs:
       mode:
+        description: "Build mode (snapshot or release)"
         required: true
-        type: string
+        default: snapshot
+        type: choice
+        options:
+          - snapshot
+          - release
 
 jobs:
   prepare:
