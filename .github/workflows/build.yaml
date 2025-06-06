@@ -1,5 +1,6 @@
 name: Build
 
+
 on:
   workflow_dispatch:
     inputs:
@@ -7,17 +8,12 @@ on:
         description: "Build mode (snapshot or release)"
         required: true
         default: snapshot
-        type: choice
-        options:
-          - snapshot
-          - release
 
 jobs:
   prepare:
     uses: gardener/cc-utils/.github/workflows/prepare.yaml@master
     with:
-      mode: ${{ inputs }}
-
+      mode: ${{ inputs.mode }}
   lint:
     runs-on: ubuntu-latest
     needs: prepare
