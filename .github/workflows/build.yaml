@@ -25,8 +25,7 @@ jobs:
           image: europe-docker.pkg.dev/gardener-project/releases/ocm-gear/delivery-dashboard-linter:latest
           options: -v ${{ github.workspace }}:/workspace -w /workspace
           run: |
-            lint
-            eslint.sast.config.mjs
+            .ci/lint eslint.sast.config.mjs
 
   docker-image:
     name: Build OCI Image
