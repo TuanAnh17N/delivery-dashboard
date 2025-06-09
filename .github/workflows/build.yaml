@@ -71,6 +71,7 @@ jobs:
     needs:
       - prepare
       - docker-image
+      - normalize-registry
     permissions:
       contents: read
       packages: write
