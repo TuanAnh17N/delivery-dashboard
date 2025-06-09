@@ -55,7 +55,7 @@ jobs:
       oci-repository: odg/delivery-dashboard
       dockerfile: Dockerfile
       ctx: oci-images
-      oci-platforms: linux/amd64, linux/arm64
+      oci-platforms: linux/amd64,linux/arm64
       ocm-labels: |
         name: gardener.cloud/cve-categorisation
         value:
