@@ -1,6 +1,5 @@
 name: Build
 
-
 on:
   workflow_dispatch:
     inputs:
@@ -14,9 +13,21 @@ jobs:
     uses: gardener/cc-utils/.github/workflows/prepare.yaml@master
     with:
       mode: ${{ inputs.mode }}
+
+  normalize-registry:
+    runs-on: ubuntu-latest
+    outputs:
+      oci-registry: ${{ steps.lowercase.outputs.oci-registry }}
+    steps:
+      - name: Convert owner to lowercase
+        id: lowercase
+        run: |
+          echo "oci-registry=ghcr.io/$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+
   lint:
     runs-on: ubuntu-latest
-    needs: prepare
+    needs:
+      - prepare
     steps:
       - uses: actions/checkout@v4
       - name: Run Linter and SAST
@@ -29,7 +40,9 @@ jobs:
 
   docker-image:
     name: Build OCI Image
-    needs: prepare
+    needs:
+      - prepare
+      - normalize-registry
     permissions:
       contents: read
       packages: write
@@ -38,7 +51,7 @@ jobs:
     with:
       name: delivery-dashboard
       version: ${{ needs.prepare.outputs.version }}
-      oci-registry: ${{ needs.prepare.outputs.oci-registry }}
+      oci-registry: ${{ needs.normalize-registry.outputs.oci-registry }}
       oci-repository: odg/delivery-dashboard
       dockerfile: Dockerfile
       ctx: oci-images
@@ -52,6 +65,7 @@ jobs:
           confidentiality_requirement: none
           integrity_requirement: high
           availability_requirement: high
+
   helmchart:
     name: Build Helmchart
     needs:
@@ -65,7 +79,7 @@ jobs:
     with:
       name: delivery-dashboard
       dir: charts/delivery-dashboard
-      oci-registry: ${{ needs.prepare.outputs.oci-registry }}
+      oci-registry: ${{ needs.normalize-registry.outputs.oci-registry }}
       oci-repository: charts/odg
       ocm-mappings: |
         - ref: ocm-resource:delivery-dashboard.repository
@@ -76,3 +90,4 @@ jobs:
           attribute: busybox.image.repository
         - ref: ocm-resource:busybox.tag
           attribute: busybox.image.tag
+
