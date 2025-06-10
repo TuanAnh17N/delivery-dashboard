@@ -1,13 +1,16 @@
 name: Build
 
 on:
-  workflow_dispatch:
+  workflow_call:
     inputs:
       mode:
-        description: "Build mode (snapshot or release)"
         required: true
-        default: snapshot
-
+        type: string
+        description:
+          mode as expected by `cc-utils/.github/workflows/prepare`
+          either of
+          - snapshot
+          -release
 jobs:
   prepare:
     uses: gardener/cc-utils/.github/workflows/prepare.yaml@master
