@@ -42,7 +42,7 @@ jobs:
 
           .ci/lint eslint.sast.config.mjs 2>&1 | tee $eslint_logfile || true
 
-          tar czf $eslint_evidence $eslint_logfile .ci/eslint.sast.config.mjs
+          tar czf $eslint_evidence $eslint_logfile eslint.sast.config.mjs
 
       - name: Export ESLint SAST evidence to component descriptor
         uses: gardener/cc-utils/.github/actions/export-ocm-fragments@master
