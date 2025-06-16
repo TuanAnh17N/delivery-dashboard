@@ -29,9 +29,43 @@ jobs:
         with:
           node-version: latest
 
-      - name: Install dependencies + run linter
+      - name: Run ESLint
         run: |
-          .ci/lint eslint.sast.config.mjs
+          .ci/lint eslint.config.mjs
+
+      - name: Run ESLint (SAST) and collect evidence
+        run: |
+          blobs_dir=blods.d
+          mkdir - p $blobs_dir
+          eslint_logfile=eslint-sast.log
+          eslint_evidence='${blobs_dir}/eslint-sast.tar.gz'
+
+          .ci/lint eslint.sast.config.mjs 2>&1 | tee $eslint_logfile || true
+
+          tar czf $eslint_evidence $eslint_logfile .ci/eslint.sast.config.njs
+
+      - name: Export ESLint SAST evidence to component descriptor
+        uses: gardener/cc-utils/.github/actions/export-ocm-fragments@master
+        with:
+          blobs-directory: blobs.d
+          ocm-resources: |
+            name: sast-linting-evidence
+            relation: local
+            access:
+              type: localBlob
+              localReference: eslint-sast.tar.gz
+            labels:
+              - name: gardener.cloud/purposes
+                value:
+                  - lint
+                  - sast
+                  - eslint
+
+              - name: gardener.cloud/comment
+                value: |
+                  we use eslint with "eslint-plugin-security" for SAST scans
+                  see: https://github.com/eslint-community/eslint-plugin-security
+
 
   docker-image:
     name: Build OCI Image
