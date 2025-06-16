@@ -35,14 +35,14 @@ jobs:
 
       - name: Run ESLint (SAST) and collect evidence
         run: |
-          blobs_dir=blods.d
+          blobs_dir=blobs.d
           mkdir - p $blobs_dir
           eslint_logfile=eslint-sast.log
-          eslint_evidence='${blobs_dir}/eslint-sast.tar.gz'
+          eslint_evidence="${blobs_dir}/eslint-sast.tar.gz"
 
           .ci/lint eslint.sast.config.mjs 2>&1 | tee $eslint_logfile || true
 
-          tar czf $eslint_evidence $eslint_logfile .ci/eslint.sast.config.njs
+          tar czf $eslint_evidence $eslint_logfile .ci/eslint.sast.config.mjs
 
       - name: Export ESLint SAST evidence to component descriptor
         uses: gardener/cc-utils/.github/actions/export-ocm-fragments@master
